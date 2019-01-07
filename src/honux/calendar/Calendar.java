@@ -1,9 +1,34 @@
 package honux.calendar;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+
 public class Calendar {
 	
 	private final int[] MAX_DAYS = {0,31,28,31,30,31,30,31,31,30,31,30,31};
 	private final int[] LEAP_MAX_DAYS = {0,31,29,31,30,31,30,31,31,30,31,30,31};
+	
+	
+	private HashMap <Date, String> planMap;
+	
+	public Calendar(){
+		planMap = new HashMap<Date, String>();
+	}
+	
+	public void registerPlan(String strDate, String plan) throws ParseException {
+		Date date = new SimpleDateFormat("yyy-MM-dd").parse(strDate);
+//		System.out.println(date);
+		planMap.put(date, plan);
+	}
+	
+	public String serachPlan(String strDate) throws ParseException{
+		Date date = new SimpleDateFormat("yyy-MM-dd").parse(strDate);
+		String plan = planMap.get(date);
+		return plan;
+	}
 	
 	public boolean isLeapYear(int year){
 		if(year %4 ==0 && (year % 100 != 0 || year % 400 ==0)){
@@ -47,7 +72,7 @@ public class Calendar {
 	}
 	private int getWeekday(int year, int month, int day) {
 		int syear = 1970;
-		final int STANDARD_WEEKDAY = 3; //Thursday
+		final int STANDARD_WEEKDAY = 4; //Thursday
 		
 		int count = 0;
 		for(int i=syear; i < year; i++){
@@ -59,14 +84,18 @@ public class Calendar {
 			count += day;
 		}
 		
-		count += day;
+		count += day -1;
 //		System.out.println(count);
 		int weekday = (count+STANDARD_WEEKDAY) %7;
 		return weekday;
 	}
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws ParseException{
+		Calendar cal = new Calendar();
 		Calendar c = new Calendar();
-		System.out.println(c.getWeekday(1970, 1, 1) == 3);
+		System.out.println(c.getWeekday(1970, 1, 1) == 4);
+		
+		cal.registerPlan("2017-06-23", "Let's eat beef!");
+		System.out.println(cal.serachPlan("2017-06-23").equals("Let's eat beef!"));
 	}
 }
